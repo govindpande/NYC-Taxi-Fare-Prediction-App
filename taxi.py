@@ -280,16 +280,3 @@ elif page == "ML Prediction":
     # Display the plot in the Streamlit app
     st.pyplot(fig)
 
-
-    # Display the distribution of residuals in Streamlit
-    st.subheader('Distribution of Residuals')
-
-    # Visualize the distribution of the residuals
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.histplot(results['residual'], bins=np.arange(-15, 15.5, 0.5), ax=ax)
-    plt.title('Distribution of the Residuals')
-    plt.xlabel('Residual Value')
-    plt.ylabel('Count')
-
-    # Display the plot in the Streamlit app
-    st.pyplot(fig)
