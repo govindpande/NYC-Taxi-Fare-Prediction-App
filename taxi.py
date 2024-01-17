@@ -72,70 +72,6 @@ elif page == "ML Prediction":
     taxi_data['rush_hour'] = taxi_data['tpep_pickup_datetime'].dt.hour
 
 
-    # Feature Engineering
-    # Assuming 'VendorID', 'passenger_count', 'fare_amount', 'trip_distance', 'duration' columns are available
-    selected_features = ['VendorID', 'passenger_count', 'trip_distance', 'duration']
-    X = ml_data[selected_features]
-    y = ml_data[['fare_amount']]
-
-    # Remove the 'fare_amount' column from the data
-    #X = X.drop(columns=['fare_amount'])
-
-    # Convert 'VendorID' to string and apply one-hot encoding
-    X['VendorID'] = X['VendorID'].astype(str)
-    X = pd.get_dummies(X, drop_first=True)
-
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-    # Standardize the X variables
-    scaler = StandardScaler().fit(X_train)
-    X_train_scaled = scaler.transform(X_train)
-
-    # Train the linear regression model
-    lr = LinearRegression()
-    lr.fit(X_train_scaled, y_train)
-
-    # Add a section for Predictor
-    st.sidebar.title('Predictor')
-
-    # Add user input widgets for predictor variables
-    st.sidebar.header('Input Predictor Variables')
-
-    # Change Vendor ID input to text
-    vendor_id = st.sidebar.text_input('Vendor ID',1)
-
-    # Ensure slider values have the appropriate types (float64)
-    passenger_count = st.sidebar.slider('Passenger Count', float(X['passenger_count'].min()), float(X['passenger_count'].max()), float(X['passenger_count'].mean()))
-    trip_distance = st.sidebar.slider('Trip Distance', float(X['trip_distance'].min()), float(X['trip_distance'].max()), float(X['trip_distance'].mean()))
-    duration = st.sidebar.slider('Duration',1,240)
-
-    # Create a DataFrame with user inputs
-    user_input = pd.DataFrame({
-        'VendorID': [vendor_id],
-        'passenger_count': [passenger_count],
-        'trip_distance': [trip_distance],
-        'duration': [duration]
-    })
-
-    # Apply one-hot encoding to user input
-    user_input['VendorID'] = user_input['VendorID'].astype(str)
-    user_input = pd.get_dummies(user_input, drop_first=True)
-
-    # Ensure the user input has the same features as the training data
-    user_input = user_input.reindex(columns=X.columns, fill_value=0)
-
-    # Standardize the user inputs using the same scaler
-    user_input_scaled = scaler.transform(user_input)
-
-    # Predict the target variable
-    prediction = lr.predict(user_input_scaled)
-
-    # Display the prediction in the Streamlit app
-    st.sidebar.header('Prediction')
-    st.sidebar.write(f'The predicted fare amount is: ${prediction[0][0]:.2f}')
-
-
 
 
 
@@ -251,6 +187,70 @@ elif page == "ML Prediction":
     rmse_test = np.sqrt(mse_test)
     st.write(f'Root Mean Squared Error (RMSE) on Testing Data: {rmse_test:.4f}')
 
+
+
+    # Feature Engineering
+    # Assuming 'VendorID', 'passenger_count', 'fare_amount', 'trip_distance', 'duration' columns are available
+    selected_features = ['VendorID', 'passenger_count', 'trip_distance', 'duration']
+    X = ml_data[selected_features]
+    y = ml_data[['fare_amount']]
+
+    # Remove the 'fare_amount' column from the data
+    #X = X.drop(columns=['fare_amount'])
+
+    # Convert 'VendorID' to string and apply one-hot encoding
+    X['VendorID'] = X['VendorID'].astype(str)
+    X = pd.get_dummies(X, drop_first=True)
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    # Standardize the X variables
+    scaler = StandardScaler().fit(X_train)
+    X_train_scaled = scaler.transform(X_train)
+
+    # Train the linear regression model
+    lr = LinearRegression()
+    lr.fit(X_train_scaled, y_train)
+
+    # Add a section for Predictor
+    st.sidebar.title('Predictor')
+
+    # Add user input widgets for predictor variables
+    st.sidebar.header('Input Predictor Variables')
+
+    # Change Vendor ID input to text
+    vendor_id = st.sidebar.text_input('Vendor ID',1)
+
+    # Ensure slider values have the appropriate types (float64)
+    passenger_count = st.sidebar.slider('Passenger Count', float(X['passenger_count'].min()), float(X['passenger_count'].max()), float(X['passenger_count'].mean()))
+    trip_distance = st.sidebar.slider('Trip Distance', float(X['trip_distance'].min()), float(X['trip_distance'].max()), float(X['trip_distance'].mean()))
+    duration = st.sidebar.slider('Duration',1,240)
+
+    # Create a DataFrame with user inputs
+    user_input = pd.DataFrame({
+        'VendorID': [vendor_id],
+        'passenger_count': [passenger_count],
+        'trip_distance': [trip_distance],
+        'duration': [duration]
+    })
+
+    # Apply one-hot encoding to user input
+    user_input['VendorID'] = user_input['VendorID'].astype(str)
+    user_input = pd.get_dummies(user_input, drop_first=True)
+
+    # Ensure the user input has the same features as the training data
+    user_input = user_input.reindex(columns=X.columns, fill_value=0)
+
+    # Standardize the user inputs using the same scaler
+    user_input_scaled = scaler.transform(user_input)
+
+    # Predict the target variable
+    prediction = lr.predict(user_input_scaled)
+
+    # Display the prediction in the Streamlit app
+    st.sidebar.header('Prediction')
+    st.sidebar.write(f'The predicted fare amount is: ${prediction[0][0]:.2f}')
 
 
     # Create a `results` dataframe
